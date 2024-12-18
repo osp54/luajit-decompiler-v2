@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    - name: Configure MSVC environment
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+        cl /EHsc /std:c++17 /Fe:luajit-decompiler-v2.exe main.cpp
+        ls
+        tree .
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: luajit-decompiler-v2
+        path: luajit-decompiler-v2.exe
