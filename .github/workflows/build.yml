@@ -1,3 +1,4 @@
+name: Build
 
 on:
   push:
@@ -12,6 +13,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -19,12 +22,11 @@ jobs:
 
     - name: Configure MSVC environment
       run: |
-        cl /EHsc /std:c++20 /J /Fe:luajit-decompiler-v2.exe main.cpp
-        ls
-        tree .
+        cl /EHsc /std:c++20 /J /Fe:luajit-decompiler-v2.exe main.cpp ast\\*.cpp bytecode\\*.cpp lua\\*.cpp user32.lib comdlg32.lib
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v3
       with:
         name: luajit-decompiler-v2
         path: luajit-decompiler-v2.exe
+
